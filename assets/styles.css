@@ -1,0 +1,19 @@
+.weather-header{
+    background-color: blue;
+    margin: 10px;
+}
+
+
+.userInput{
+    background-color: blanchedalmond;
+}
+
+.userOutput{
+    background-color: blueviolet;
+    
+}
+
+.customBtn{
+    margin-top: 10px;
+    width: 100%;
+}
