@@ -1,15 +1,26 @@
+
+
+:root {
+    --mainBackgroundColor: #3f4ba5;
+    --secondaryBackgroundColor: #aeaeae;
+}
+
+
+
+
+
 .weather-header{
-    background-color: blue;
+    background-color: var(--mainBackgroundColor);
     margin: 10px;
 }
 
 
 .userInput{
-    background-color: blanchedalmond;
+    background-color:var(--secondaryBackgroundColor);
 }
 
 .userOutput{
-    background-color: blueviolet;
+    background-color:var(--secondaryBackgroundColor);
     
 }
 
@@ -22,8 +33,22 @@
 
 }
 
+.current-Future-Container{
+    margin-top: 20px;
+    background-color: var(--mainBackgroundColor);
+    color: white;
+    display: flex;
+    gap: 10px;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+}
+
+
 .cityOutput{
     margin-top: 20px;
-    background-color: blue;
+    background-color: var(--mainBackgroundColor);
     color: white;
+    padding: 10px;
 }
+
