@@ -17,3 +17,13 @@
     margin-top: 10px;
     width: 100%;
 }
+.form-control{
+    font-size: 18px;
+
+}
+
+.cityOutput{
+    margin-top: 20px;
+    background-color: blue;
+    color: white;
+}
