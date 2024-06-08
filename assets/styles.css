@@ -3,6 +3,7 @@
 :root {
     --mainBackgroundColor: #3f4ba5;
     --secondaryBackgroundColor: #aeaeae;
+    --weatherColor: #323d4f;
 }
 
 
@@ -52,3 +53,40 @@
     padding: 10px;
 }
 
+.citySearched{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    padding:5px;
+
+}
+
+.userInput2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+.forecastDays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  background-color: var(--weatherColor);
+}
+
+.forecastDays div {
+  background-color: var(--weatherColor);
+  color: white;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.userInput2 h5 {
+  display: block;
+  margin-bottom: 20px;
+}

@@ -1,216 +1,229 @@
-const cityInputEl = document.getElementById('cityName');
-const searchBtn = document.getElementById('search');
-const userInputEl = document.querySelector('.userInput');
-const userOutputWeather = document.querySelector('.userOutput');
-const formContainerEl = document.getElementById('form-container');
+const cityInputEl = document.getElementById("cityName");
+const searchBtn = document.getElementById("search");
+const userInputEl = document.querySelector(".userInput");
+const userOutputWeather = document.querySelector(".userOutput");
+const formContainerEl = document.getElementById("form-container");
 
 // AUTOCOMPLETE FUNCTION TO CHOOSE CITY
 function getCity() {
-    const cityUrl = 'https://countriesnow.space/api/v0.1/countries/population/cities';
+  const cityUrl =
+    "https://countriesnow.space/api/v0.1/countries/population/cities";
 
-    fetch(cityUrl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            const cityArray = [];
-            for (let i = 0; i < data.data.length; i++) {
-                const cityName = data.data[i].city.trim().split(' ')[0];
-                cityArray.push(cityName);
-            }
-            initializeAutocomplete(cityArray);
-        })
-        .catch(function(error) {
-            console.error('Error fetching city data:', error);
-        });
-}
-
-function initializeAutocomplete(cityArray) {
-    $("#cityName").autocomplete({
-        source: cityArray,
-        select: handleCitySelection
+  fetch(cityUrl)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      const cityArray = [];
+      for (let i = 0; i < data.data.length; i++) {
+        const cityNameEl = data.data[i].city.trim().split(" ")[0];
+        cityArray.push(cityNameEl);
+      }
+      initializeAutocomplete(cityArray);
+    })
+    .catch(function (error) {
+      console.error("Error fetching city data:", error);
     });
 }
 
-cityInputEl.addEventListener('input', getCity);
+function initializeAutocomplete(cityArray) {
+  $("#cityName").autocomplete({
+    source: cityArray,
+    select: handleCitySelection,
+  });
+}
+
+cityInputEl.addEventListener("input", getCity);
 
 // Function to handle the selection of a city
 function handleCitySelection(event, ui) {
-    const selectedCity = ui.item.value;
-    console.log('Selected city:', selectedCity);
+  const selectedCity = ui.item.value;
+  console.log("Selected city:", selectedCity);
 }
 
 // Function to handle the search button click event
 function handleSearchButtonClick() {
-    const selectedCity = cityInputEl.value;
+  const selectedCity = cityInputEl.value;
 
-    // Check if a city is selected
+  // Check if a city is selected
+  if (selectedCity) {
+console.log(selectedCity);
+// Create button if city exists
+let currentFutureContainerEl = document.querySelector('.current-Future-Container');
+
+const currentButtonEl = document.createElement ('button');
+currentButtonEl.textContent = 'current Weather';
+currentButtonEl.setAttribute('class', 'btn btn-secondary current-weather');
+
+const futureButtonEl = document.createElement ('button');
+futureButtonEl.setAttribute('class', 'btn btn-secondary future-weather');
+futureButtonEl.textContent ='Future Weather';
+
+if (!currentFutureContainerEl){
+  const currentFutureContainerEl =document.createElement('div');
+currentFutureContainerEl.setAttribute('class','current-Future-Container' );
+formContainerEl.appendChild(currentFutureContainerEl);
+currentFutureContainerEl.appendChild(currentButtonEl);
+currentFutureContainerEl.appendChild(futureButtonEl);
+
+}
+
+  const existingBtn = userInputEl.querySelector(`button.citySearched[data-city="${selectedCity}"]`);
+
+  if (!existingBtn) {
+    const currentCityDisplayedBtnEl = document.createElement('button');
+    currentCityDisplayedBtnEl.textContent = selectedCity;
+    currentCityDisplayedBtnEl.setAttribute('class', 'btn btn-secondary citySearched');
+    currentCityDisplayedBtnEl.setAttribute('data-city', selectedCity); 
+    userInputEl.appendChild(currentCityDisplayedBtnEl);
+  }
+}
+
+
+function getCurrentWeather () {
+  event.preventDefault();
+const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${selectedCity}&appid=2d6269600f96ffe09fdeb1b3948717ff`;
+fetch(weatherUrl)
+.then( function (response){
+return response.json()
+})
+.then( function (weatherdata){
+  userOutputWeather.innerHTML = '';
+    console.log(weatherdata.city.coord.name);
+    console.log(weatherdata.city);
+    let date = new Date().toDateString();
+    console.log(date);
+    
+
+    const cityNameDisplayContainer = document.createElement('div');
+    cityNameDisplayContainer.setAttribute('class','displayCity');
+    const cityNameDisplayHeader =document.createElement('h5');
+    cityNameDisplayHeader.textContent = `${weatherdata.city.name} (${date})`;
+
+    const tempEl = document.createElement('p');
+    const windEl = document.createElement('p');
+    const humidityEl = document.createElement('p');
+
+    
+    
+
+
+     cityNameDisplayContainer.appendChild(cityNameDisplayHeader);
+     userOutputWeather.appendChild(cityNameDisplayContainer);
+     userOutputWeather.appendChild(tempEl);
+     userOutputWeather.appendChild(windEl);
+     userOutputWeather.appendChild(humidityEl);
+     userOutputWeather.appendChild(tempEl);
+
+     tempEl.textContent = `Temperature: ${weatherdata.list[0].main.temp}°F`;
+     windEl.textContent = `Wind Speed: ${weatherdata.list[0].wind.speed} m/s`;
+     humidityEl.textContent = `Humidity: ${weatherdata.list[0].main.humidity}%`;
+     
+
+
+  }
+    
+  
+)
+
+}
+
+const currentWeatherBtn = document.querySelector('.current-weather');
+currentWeatherBtn.addEventListener('click', getCurrentWeather);
+
+
+
+
+const futureWeatherBtn = document.querySelector('.future-weather');
+const displa5Days = document.querySelector('.userInput2');
+
+
+
+ if (futureWeatherBtn) {
+    futureWeatherBtn.addEventListener('click', getFutureWeather);
+  }
+
+  function getFutureWeather(event) {
+    event.preventDefault();
+
+    const selectedCity = document.getElementById('cityName').value;
+
+    const weatherUrlForecast = `https://api.openweathermap.org/data/2.5/forecast?q=${selectedCity}&appid=2d6269600f96ffe09fdeb1b3948717ff&units=imperial`;
+
+    fetch(weatherUrlForecast)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (forecastData) {
+        console.log(forecastData);
+
+        if (displa5Days) {
+          displa5Days.innerHTML = '';
+
+          const dayForecastHeader = document.createElement('h5');
+          dayForecastHeader.textContent = '5-Day Forecast';
+          displa5Days.appendChild(dayForecastHeader);
+
+          const dayContainers = [];
+          for (let i = 0; i < 5; i++) {
+            const dayContainer = document.createElement('div');
+            const date = document.createElement('h6');
+            const icon = document.createElement('img');
+            const temp = document.createElement('p');
+            const wind = document.createElement('p');
+            const humidity = document.createElement('p');
+
+            const forecast = forecastData.list[i * 8]; 
+
+            if (forecast && forecast.dt_txt && forecast.weather && forecast.weather[0] && forecast.main && forecast.wind) {
+              date.textContent = new Date(forecast.dt_txt).toLocaleDateString();
+              icon.src = `https://openweathermap.org/img/wn/${forecast.weather[0].icon}.png`;
+              icon.alt = `${forecast.weather[0].description}`;
+              temp.textContent = `Temp: ${forecast.main.temp}°F`;
+              wind.textContent = `Wind: ${forecast.wind.speed} MPH`;
+              humidity.textContent = `Humidity: ${forecast.main.humidity}%`;
+
+              dayContainer.appendChild(date);
+              dayContainer.appendChild(icon);
+              dayContainer.appendChild(temp);
+              dayContainer.appendChild(wind);
+              dayContainer.appendChild(humidity);
+
+              dayContainers.push(dayContainer);
+            } else {
+              console.error('Unexpected forecast data structure:', forecast);
+            }
+          }
+
+          dayContainers.forEach(container => displa5Days.appendChild(container));
+        }
+      })
+      .catch(function (error) {
+        console.error('Error fetching forecast data:', error);
+      });
+  }
+
+  document.getElementById('search').addEventListener('click', function () {
+    const selectedCity = document.getElementById('cityName').value;
+
     if (selectedCity) {
-        // Display the selected city
-        displaySelectedCity(selectedCity);
-
-        // Fetch weather data for the selected city
-        fetchWeatherData(selectedCity);
-    } else {
-        console.error('No city selected.');
+      console.log(selectedCity);
+      // You can add any other necessary logic here when a city is searched
     }
+  });
+
+
+futureWeatherBtn.addEventListener('click', getFutureWeather);
+
+
+
+
+
+
+
+
+
+
+
 }
-
-// Function to display the selected city
-function displaySelectedCity(selectedCity) {
-    // Check if the city is already displayed
-    const existingCityDisplays = document.querySelectorAll('.cityOutput h5');
-    let cityAlreadyDisplayed = false;
-
-    existingCityDisplays.forEach(function(cityDisplay) {
-        if (cityDisplay.textContent === selectedCity) {
-            cityAlreadyDisplayed = true;
-        }
-    });
-
-    if (!cityAlreadyDisplayed) {
-        const cityDisplay = document.createElement('h5');
-        cityDisplay.textContent = selectedCity;
-        cityDisplay.setAttribute('class', 'city-item');
-
-        const cityOutputContainer = document.createElement('div');
-        cityOutputContainer.setAttribute('class', 'cityOutput');
-
-        cityOutputContainer.appendChild(cityDisplay);
-        userInputEl.appendChild(cityOutputContainer);
-
-        cityDisplay.addEventListener('click', function() {
-            fetchWeatherData(selectedCity);
-        });
-    }
-
-    // Remove existing buttons if any
-    const existingButtons = document.querySelector('.current-Future-Container');
-    if (existingButtons) {
-        existingButtons.remove();
-    }
-
-    const currentWeatherConditionBtn = document.createElement('button');
-    currentWeatherConditionBtn.textContent = 'Current';
-    currentWeatherConditionBtn.setAttribute('class', 'btn btn-secondary');
-
-    const futureWeatherConditionBtn = document.createElement('button');
-    futureWeatherConditionBtn.textContent = 'Future';
-    futureWeatherConditionBtn.setAttribute('class', 'btn btn-secondary');
-
-    const currentFutureWeatherContainer = document.createElement('div');
-    currentFutureWeatherContainer.setAttribute('class', 'current-Future-Container');
-
-    currentFutureWeatherContainer.appendChild(currentWeatherConditionBtn);
-    currentFutureWeatherContainer.appendChild(futureWeatherConditionBtn);
-
-    formContainerEl.appendChild(currentFutureWeatherContainer);
-
-    // Using local storage to store the selected city
-    localStorage.setItem('selectedCity', selectedCity);
-
-    // Add event listeners for the buttons
-    currentWeatherConditionBtn.addEventListener('click', function() {
-        fetchCurrentWeatherData(selectedCity);
-    });
-
-    futureWeatherConditionBtn.addEventListener('click', function() {
-        fetchFutureWeatherData(selectedCity);
-    });
-}
-
-// Fetch weather data based on selected city
-function fetchWeatherData(selectedCity) {
-    fetchCurrentWeatherData(selectedCity);
-    fetchFutureWeatherData(selectedCity);
-}
-
-function fetchCurrentWeatherData(selectedCity) {
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${selectedCity}&units=imperial&appid=2d6269600f96ffe09fdeb1b3948717ff`;
-
-    fetch(weatherUrl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log('Weather data:', data);
-            displayWeatherData(data, 'current');
-        })
-        .catch(function(error) {
-            console.error('Error fetching weather data:', error);
-        });
-}
-
-function fetchFutureWeatherData(selectedCity) {
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${selectedCity}&units=imperial&appid=2d6269600f96ffe09fdeb1b3948717ff`;
-
-    fetch(weatherUrl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            console.log('Weather data:', data);
-            displayWeatherData(data, 'future');
-        })
-        .catch(function(error) {
-            console.error('Error fetching weather data:', error);
-        });
-}
-
-// Function to display weather data
-function displayWeatherData(weatherData, type) {
-    userOutputWeather.innerHTML = ''; // Clear previous weather data
-
-    if (type === 'current') {
-        const city = weatherData.name;
-        const date = new Date(weatherData.dt * 1000);
-        const temp = weatherData.main.temp;
-        const windSpeed = weatherData.wind.speed;
-        const humidity = weatherData.main.humidity;
-        const icon = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`;
-        const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-        const weatherInfo = `${city} (${formattedDate})\nTemp: ${temp}°F\nWind: ${windSpeed} MPH\nHumidity: ${humidity}%`;
-
-        const weatherDisplay = document.createElement('div');
-        weatherDisplay.setAttribute('class', 'weatherDisplay');
-        weatherDisplay.style.backgroundColor = "var(--secondaryBackgroundColor)";
-        weatherDisplay.innerHTML = `
-            <h3>${city} (${formattedDate})</h3>
-            <img src="${icon}" alt="Weather icon">
-            <p>Temp: ${temp}°F</p>
-            <p>Wind: ${windSpeed} MPH</p>
-            <p>Humidity: ${humidity}%</p>
-        `;
-        userOutputWeather.appendChild(weatherDisplay);
-    } else {
-        // Display future weather data for 5 days
-        for (let i = 0; i < weatherData.list.length; i += 8) {
-            const city = weatherData.city.name;
-            const date = new Date(weatherData.list[i].dt * 1000);
-            const temp = weatherData.list[i].main.temp;
-            const windSpeed = weatherData.list[i].wind.speed;
-            const humidity = weatherData.list[i].main.humidity;
-            const icon = `http://openweathermap.org/img/wn/${weatherData.list[i].weather[0].icon}.png`;
-            const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-            const weatherInfo = `${city} (${formattedDate})\nTemp: ${temp}°F\nWind: ${windSpeed} MPH\nHumidity: ${humidity}%`;
-
-            const weatherDisplay = document.createElement('div');
-            weatherDisplay.setAttribute('class', 'weatherDisplay');
-            weatherDisplay.style.backgroundColor = "var(--secondaryBackgroundColor)";
-            weatherDisplay.innerHTML = `
-                <h3>${city} (${formattedDate})</h3>
-                <img src="${icon}" alt="Weather icon">
-                <p>Temp: ${temp}°F</p>
-                <p>Wind: ${windSpeed} MPH</p>
-                <p>Humidity: ${humidity}%</p>
-            `;
-            userOutputWeather.appendChild(weatherDisplay);
-        }
-    }
-}
-
-// Add event listener for the search button click event
 searchBtn.addEventListener('click', handleSearchButtonClick);
-
-// Initialize autocomplete when the input field gains focus
-cityInputEl.addEventListener('focus', getCity);
