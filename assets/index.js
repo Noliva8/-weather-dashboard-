@@ -5,6 +5,7 @@ const userOutputWeather = document.querySelector(".userOutput");
 const formContainerEl = document.getElementById("form-container");
 
 // AUTOCOMPLETE FUNCTION TO CHOOSE CITY
+
 function getCity() {
   const cityUrl =
     "https://countriesnow.space/api/v0.1/countries/population/cities";
@@ -42,12 +43,16 @@ function handleCitySelection(event, ui) {
 }
 
 // Function to handle the search button click event
+
+
 function handleSearchButtonClick() {
+  
   const selectedCity = cityInputEl.value;
 
   // Check if a city is selected
   if (selectedCity) {
 console.log(selectedCity);
+
 // Create button if city exists
 let currentFutureContainerEl = document.querySelector('.current-Future-Container');
 
@@ -71,18 +76,38 @@ currentFutureContainerEl.appendChild(futureButtonEl);
   const existingBtn = userInputEl.querySelector(`button.citySearched[data-city="${selectedCity}"]`);
 
   if (!existingBtn) {
+    
     const currentCityDisplayedBtnEl = document.createElement('button');
     currentCityDisplayedBtnEl.textContent = selectedCity;
+    
     currentCityDisplayedBtnEl.setAttribute('class', 'btn btn-secondary citySearched');
     currentCityDisplayedBtnEl.setAttribute('data-city', selectedCity); 
     userInputEl.appendChild(currentCityDisplayedBtnEl);
+  
+
   }
+// ADDED CODE
+    
+  const savedCities =  JSON.parse(localStorage.getItem('savedCities'))|| [] ;
+    savedCities.push(selectedCity);
+console.log(savedCities);
+
+    localStorage.setItem('savedCities', JSON.stringify(savedCities));
+
+    // END ADDED CODE
+   
 }
 
 
-function getCurrentWeather () {
+
+function getCurrentWeather (event, cityData) {
   event.preventDefault();
-const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${selectedCity}&appid=2d6269600f96ffe09fdeb1b3948717ff`;
+
+  
+
+
+
+const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityData ? cityData:selectedCity }&appid=2d6269600f96ffe09fdeb1b3948717ff`;
 fetch(weatherUrl)
 .then( function (response){
 return response.json()
@@ -99,6 +124,7 @@ return response.json()
     cityNameDisplayContainer.setAttribute('class','displayCity');
     const cityNameDisplayHeader =document.createElement('h5');
     cityNameDisplayHeader.textContent = `${weatherdata.city.name} (${date})`;
+    
 
     const tempEl = document.createElement('p');
     const windEl = document.createElement('p');
@@ -123,8 +149,15 @@ return response.json()
 
   }
     
+
   
 )
+
+// save selected city in local stolage
+
+// i want to display the the data from that are within thi button: currentCityDisplayedBtnEl
+// I want to save with local storage the value of this elements: cityNameDisplayHeader.value; tempEl.value; windEl.value, HumidityEl.value; 
+
 
 }
 
@@ -217,13 +250,32 @@ futureWeatherBtn.addEventListener('click', getFutureWeather);
 
 
 
-
-
-
-
-
-
-
-
 }
 searchBtn.addEventListener('click', handleSearchButtonClick);
+
+function loadCities () {
+   const savedCities =  JSON.parse(localStorage.getItem('savedCities'))|| [] ;
+  
+console.log(savedCities);
+for ( let i=0; i< savedCities.length; i++){
+const currentCityDisplayedBtnEl = document.createElement('button');
+    currentCityDisplayedBtnEl.textContent = savedCities[i];
+    
+    currentCityDisplayedBtnEl.setAttribute('class', 'btn btn-secondary citySearched');
+    currentCityDisplayedBtnEl.setAttribute('data-city', savedCities[i]); 
+    userInputEl.appendChild(currentCityDisplayedBtnEl);
+
+    currentCityDisplayedBtnEl.addEventListener('click', ()=>{
+      cityInputEl.value = savedCities[i];
+     
+    })
+}
+  
+}
+
+loadCities();
+
+
+function historySearch () {
+
+}
